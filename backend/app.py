@@ -15,7 +15,13 @@ app = Flask(__name__, static_folder=None)
 
 # Configuration
 app.config['MAX_CONTENT_LENGTH'] = int(os.environ.get('MAX_UPLOAD_SIZE', 16 * 1024 * 1024))  # 16MB
-FRONTEND_DIR = Path(__file__).parent.parent / 'frontend'
+
+# Frontend directory - resolve to absolute path
+FRONTEND_DIR = (Path(__file__).parent.parent / 'frontend').resolve()
+
+# Verify frontend directory exists
+if not FRONTEND_DIR.exists():
+    raise FileNotFoundError(f"Frontend directory not found: {FRONTEND_DIR}")
 
 
 @app.after_request
@@ -27,20 +33,7 @@ def add_cors_headers(response):
     return response
 
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve_frontend(path):
-    """Serve frontend files"""
-    if not path or path == '/':
-        return send_from_directory(FRONTEND_DIR, 'index.html')
-    
-    file_path = FRONTEND_DIR / path
-    if file_path.exists() and file_path.is_file():
-        return send_from_directory(FRONTEND_DIR, path)
-    
-    return send_from_directory(FRONTEND_DIR, 'index.html')
-
-
+# API routes must be defined BEFORE catch-all routes
 @app.route('/api/parse', methods=['POST', 'OPTIONS'])
 def api_parse():
     """Parse uploaded PDF statement"""
@@ -76,6 +69,39 @@ def api_parse():
                 os.remove(tmp_path)
             except:
                 pass
+
+
+# Catch-all route for frontend (must be last)
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    """Serve frontend files"""
+    # Don't catch API routes
+    if path and path.startswith('api/'):
+        return jsonify({"success": False, "error": "API endpoint not found"}), 404
+    
+    # Serve index.html for root or empty path
+    if not path or path == '/':
+        return send_from_directory(str(FRONTEND_DIR), 'index.html')
+    
+    # Security: prevent directory traversal
+    safe_path = os.path.normpath(path).lstrip('/')
+    if '..' in safe_path or safe_path.startswith('/'):
+        return jsonify({"success": False, "error": "Invalid path"}), 400
+    
+    # Try to serve the requested file
+    file_path = FRONTEND_DIR / safe_path
+    # Ensure file is within frontend directory (prevent directory traversal)
+    try:
+        file_path.resolve().relative_to(FRONTEND_DIR.resolve())
+    except ValueError:
+        return jsonify({"success": False, "error": "Invalid path"}), 400
+    
+    if file_path.exists() and file_path.is_file():
+        return send_from_directory(str(FRONTEND_DIR), safe_path)
+    
+    # Fallback to index.html for SPA routing
+    return send_from_directory(str(FRONTEND_DIR), 'index.html')
 
 
 if __name__ == "__main__":

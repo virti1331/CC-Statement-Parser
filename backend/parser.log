@@ -16,3 +16,26 @@
 2025-12-18 22:42:55,634 - INFO - [33mPress CTRL+C to quit[0m
 2025-12-18 22:43:00,792 - INFO - 127.0.0.1 - - [18/Dec/2025 22:43:00] "[33mGET / HTTP/1.1[0m" 404 -
 2025-12-18 22:43:01,628 - INFO - 127.0.0.1 - - [18/Dec/2025 22:43:01] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-12-19 00:31:00,035 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.111:5000
+2025-12-19 00:31:00,046 - INFO - [33mPress CTRL+C to quit[0m
+2025-12-19 00:31:08,189 - INFO - 127.0.0.1 - - [19/Dec/2025 00:31:08] "GET / HTTP/1.1" 200 -
+2025-12-19 00:31:15,099 - INFO - 192.168.0.111 - - [19/Dec/2025 00:31:15] "GET / HTTP/1.1" 200 -
+2025-12-19 00:31:16,601 - INFO - 192.168.0.111 - - [19/Dec/2025 00:31:16] "GET /favicon.ico HTTP/1.1" 200 -
+2025-12-19 00:31:28,129 - INFO - Processing PDF: C:\Users\VIRTID~1\AppData\Local\Temp\tmp92tq0y93.pdf
+2025-12-19 00:31:29,828 - INFO - Extracted 1885 characters from PDF
+2025-12-19 00:31:29,830 - ERROR - Unable to detect credit card issuer from PDF
+2025-12-19 00:31:29,833 - INFO - 192.168.0.111 - - [19/Dec/2025 00:31:29] "[31m[1mPOST /api/parse HTTP/1.1[0m" 400 -
+2025-12-19 00:31:38,698 - INFO - Processing PDF: C:\Users\VIRTID~1\AppData\Local\Temp\tmp1qlmqatt.pdf
+2025-12-19 00:31:40,816 - INFO - Extracted 16251 characters from PDF
+2025-12-19 00:31:40,817 - INFO - Detected issuer: IDFC First Bank
+2025-12-19 00:31:40,817 - INFO - Parsing statement using IDFC parser
+2025-12-19 00:31:40,819 - INFO - Extracted card_last_4_digits (IDFC): 0010
+2025-12-19 00:31:40,820 - WARNING - Could not extract billing_period for IDFC
+2025-12-19 00:31:40,821 - INFO - Extracted payment_due_date (IDFC): 06/03/2024
+2025-12-19 00:31:40,822 - WARNING - Could not extract total_amount_due for IDFC
+2025-12-19 00:31:40,825 - INFO - Extracted 3 transactions for IDFC
+2025-12-19 00:31:40,825 - INFO - Parsing completed successfully
+2025-12-19 00:31:40,831 - INFO - 192.168.0.111 - - [19/Dec/2025 00:31:40] "POST /api/parse HTTP/1.1" 200 -
