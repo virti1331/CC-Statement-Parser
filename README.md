@@ -210,6 +210,33 @@ Key operations and errors are written to `backend/parser.log` for debugging.
 
 ---
 
+## Deployment on Vercel
+
+This project is configured for easy deployment on Vercel:
+
+1. **Push your code to GitHub** (if not already done)
+
+2. **Import on Vercel**:
+   - Go to [vercel.com](https://vercel.com)
+   - Click "Import Project"
+   - Select your GitHub repository
+   - Vercel will auto-detect the configuration from `vercel.json`
+
+3. **Deploy**:
+   - Click "Deploy"
+   - Vercel will:
+     - Install Python dependencies from `requirements.txt`
+     - Deploy the API as a serverless function at `/api/parse`
+     - Serve the frontend from the `frontend/` directory
+     
+4. **Access your app**:
+   - Your app will be live at `https://your-project.vercel.app`
+   - The frontend will automatically use the same origin for API calls
+
+**Note**: The `vercel.json` configuration handles routing `/api/parse` to the Python backend and all other routes to the static frontend.
+
+---
+
 ## License & Usage
 
 This is an **educational/demo** project.  
