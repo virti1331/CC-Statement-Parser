@@ -1,243 +1,264 @@
-## Credit Card Statement PDF Parser
+# Credit Card Statement Parser
 
-A Python-based backend + simple HTML frontend for extracting structured data from credit card statement PDFs across multiple issuers.
+A Python-based application that automatically extracts structured data from credit card statement PDFs. Supports multiple banks and provides both a web interface and command-line tool.
 
-### Overview
+## Project Scope
 
-- **Backend**: Flask API + CLI parser in `backend/`  
-- **Frontend**: Lightweight HTML/JS UI in `frontend/` that calls the backend API  
-- **Parsing**: Deterministic, rule‑based text extraction with issuer‑specific parsers
+### What It Does
 
-### Supported Issuers
+This application parses credit card statement PDFs and extracts key information including:
+- **Issuer identification** (which bank issued the card)
+- **Card details** (last 4 digits of card number)
+- **Billing information** (billing period, payment due date)
+- **Financial data** (total amount due)
+- **Transaction history** (date, description, amount for each transaction)
 
-- **HDFC Bank**
-- **ICICI Bank**
-- **Axis Bank**
-- **Chase Bank**
-- **IDFC First Bank**
+### Problem It Solves
 
-Each supported issuer has its own dedicated parser module under `backend/parser/`.
+Manually extracting data from credit card statements is time-consuming and error-prone. This tool automates the process by:
+- Reading PDF statements directly
+- Identifying the bank automatically
+- Extracting structured data using bank-specific parsers
+- Providing results in JSON format for easy integration
 
-### Project Structure
+### Use Cases
+
+- **Personal Finance Tracking**: Quickly extract spending data from multiple statements
+- **Expense Analysis**: Parse transactions for budgeting and analysis
+- **Data Integration**: Get structured data from PDFs for spreadsheets or databases
+- **Batch Processing**: Process multiple statements via CLI
+
+## Technologies Used
+
+### Backend
+
+- **Python 3.8+**: Core programming language
+- **Flask 3.0.0**: Lightweight web framework for API and static file serving
+- **pdfplumber 0.10.3**: PDF text extraction library
+- **gunicorn 21.2.0**: Production WSGI server (optional, for deployment)
+
+### Frontend
+
+- **HTML5**: Web interface structure
+- **JavaScript (Vanilla)**: Client-side logic and API communication
+- **Tailwind CSS**: Modern styling via CDN
+
+### Architecture
+
+- **RESTful API**: Simple POST endpoint for PDF parsing
+- **Single-Page Application**: Frontend served as static files
+- **Modular Parser Design**: Separate parser module for each bank
+
+## Project Structure
 
 ```
 CC Statement Parser/
 │
-├── backend/
-│   ├── app.py              # Flask API server
-│   ├── main.py             # CLI entry point
-│   ├── parser/
-│   │   ├── __init__.py
-│   │   ├── detect_issuer.py
-│   │   ├── hdfc.py
-│   │   ├── icici.py
-│   │   ├── axis.py
-│   │   ├── chase.py
-│   │   ├── idfc.py
-│   │   └── utils.py
-│   ├── samples/            # Sample PDF statements
-│   │   ├── axisbank_statement.pdf
-│   │   ├── chase_statement.pdf
-│   │   ├── HDFC_statement.pdf
-│   │   ├── ICICI_statement.pdf
-│   │   └── IDFC_statement.pdf
-│   ├── requirements.txt    # Backend dependencies
-│   └── parser.log          # Generated log file
+├── backend/                    # Backend application
+│   ├── app.py                  # Flask web server
+│   │   ├── Serves frontend files
+│   │   ├── Handles /api/parse endpoint
+│   │   └── CORS configuration
+│   │
+│   ├── main.py                 # CLI entry point
+│   │   ├── Command-line interface
+│   │   ├── parse_statement() function
+│   │   └── JSON output formatting
+│   │
+│   ├── wsgi.py                 # Production WSGI entry point
+│   │   └── For gunicorn deployment
+│   │
+│   ├── parser/                 # Parser modules
+│   │   ├── __init__.py         # Package exports
+│   │   ├── detect_issuer.py    # Bank detection logic
+│   │   │   └── Identifies issuer from PDF text
+│   │   │
+│   │   ├── utils.py            # Shared utilities
+│   │   │   ├── extract_text_from_pdf()
+│   │   │   ├── find_pattern() - regex helpers
+│   │   │   └── Text processing functions
+│   │   │
+│   │   ├── hdfc.py             # HDFC Bank parser
+│   │   ├── icici.py             # ICICI Bank parser
+│   │   ├── axis.py              # Axis Bank parser
+│   │   ├── chase.py             # Chase Bank parser
+│   │   └── idfc.py              # IDFC First Bank parser
+│   │       └── Each parser extracts: issuer, card, dates, amounts, transactions
+│   │
+│   ├── requirements.txt        # Python dependencies
+│   │
+│   └── samples/                # Sample PDF statements for testing
+│       ├── HDFC_statement.pdf
+│       ├── ICICI_statement.pdf
+│       ├── axisbank_statement.pdf
+│       ├── chase_statement.pdf
+│       └── IDFC_statement.pdf
 │
-└── frontend/
-    └── index.html          # Simple web UI
+├── frontend/                   # Frontend application
+│   └── index.html              # Single-page web interface
+│       ├── File upload UI
+│       ├── API integration
+│       ├── Results display
+│       └── Transaction filtering
+│
+└── README.md                   # This file
 ```
 
-### Sample Statements
+### Component Details
 
-Sample PDFs for quick testing live in `backend/samples/`:
+#### Backend Components
 
-- **Axis Bank**: `backend/samples/axisbank_statement.pdf`
-- **Chase**: `backend/samples/chase_statement.pdf`
-- **HDFC Bank**: `backend/samples/HDFC_statement.pdf`
-- **ICICI Bank**: `backend/samples/ICICI_statement.pdf`
-- **IDFC First Bank**: `backend/samples/IDFC_statement.pdf`
+**`app.py`** - Flask Web Server
+- Creates Flask application instance
+- Serves frontend static files from `frontend/` directory
+- Handles `/api/parse` POST endpoint for PDF uploads
+- Manages file uploads, temporary file cleanup, and error handling
+- Configures CORS headers for cross-origin requests
 
-### Extracted Fields
+**`main.py`** - CLI Tool
+- Entry point for command-line usage
+- Accepts PDF file path as argument
+- Orchestrates parsing workflow:
+  1. Extract text from PDF
+  2. Detect bank issuer
+  3. Route to appropriate parser
+  4. Return structured JSON
+- Logs operations to `parser.log`
 
-For every supported statement the parser extracts at least:
+**`parser/detect_issuer.py`** - Bank Detection
+- Searches PDF text for bank-specific keywords
+- Returns issuer code (HDFC, ICICI, AXIS, CHASE, IDFC)
+- Raises `UnsupportedIssuerError` if bank not recognized
 
-1. **issuer** – Name of the issuer (`HDFC`, `ICICI`, `AXIS`, `CHASE`, `IDFC`)
-2. **card_last_4_digits** – Last 4 digits of the card number
-3. **billing_period** – Statement period / date range
-4. **payment_due_date** – Payment due date
-5. **total_amount_due** – Total amount payable
-6. **transactions** – List of parsed transactions (date, description, amount) when available
+**`parser/utils.py`** - Shared Utilities
+- `extract_text_from_pdf()`: Uses pdfplumber to extract all text
+- `find_pattern()`: Regex pattern matching helpers
+- Text processing and normalization functions
 
-If a field cannot be extracted, it is returned as `null` instead of crashing.
+**Bank Parsers** (`hdfc.py`, `icici.py`, etc.)
+- Each module contains issuer-specific parsing logic
+- Uses regex patterns tailored to that bank's statement format
+- Extracts: issuer, card_last_4_digits, billing_period, payment_due_date, total_amount_due, transactions
+- Returns `None` for missing fields (graceful degradation)
 
-### Example JSON Output
+#### Frontend Component
 
-```json
-{
-  "issuer": "HDFC",
-  "card_last_4_digits": "4341",
-  "billing_period": "23/10/2024",
-  "payment_due_date": "12/11/2024",
-  "total_amount_due": "₹83,794.00",
-  "transactions": [
-    {
-      "date": "23/10/2024",
-      "description": "AMAZON PURCHASE",
-      "amount": "1,234.56"
-    }
-  ]
-}
+**`index.html`** - Web Interface
+- Single HTML file with embedded CSS (Tailwind CDN) and JavaScript
+- File upload interface
+- Calls `/api/parse` endpoint
+- Displays parsed results in formatted cards
+- Transaction table with filtering capabilities
+- Responsive design for mobile and desktop
+
+## Setup & Installation
+
+### Prerequisites
+
+- Python 3.8 or higher
+- pip (Python package manager)
+
+### Installation
+
+```bash
+# Install dependencies
+pip install -r backend/requirements.txt
 ```
 
----
+## Usage
 
-## Backend (CLI + API)
+### Web Interface
 
-### 1. Setup
+```bash
+# Start the server
+cd backend
+python app.py
 
-- **Prerequisites**
-  - **Python 3.8+**
-  - **pip**
+# Open in browser
+# http://localhost:5000
+```
 
-- **Install dependencies**
+1. Click "Upload" and select a PDF statement
+2. Click "Parse statement"
+3. View extracted data and transactions
 
-From the project root:
+### Command Line
 
 ```bash
 cd backend
-pip install -r requirements.txt
+python main.py path/to/statement.pdf
 ```
 
-This installs `Flask`, `pdfplumber` and other parsing dependencies.
+Output is printed as formatted JSON to the console.
 
-### 2. CLI Usage
-
-From inside `backend/`:
+### API Endpoint
 
 ```bash
-python main.py <path_to_pdf>
+curl -X POST http://localhost:5000/api/parse \
+  -F "file=@statement.pdf"
 ```
 
-**Example:**
-
-```bash
-python main.py samples/HDFC_statement.pdf
+**Response:**
+```json
+{
+  "success": true,
+  "file": "statement.pdf",
+  "data": {
+    "issuer": "HDFC",
+    "card_last_4_digits": "4341",
+    "billing_period": "23/10/2024",
+    "payment_due_date": "12/11/2024",
+    "total_amount_due": "₹83,794.00",
+    "transactions": [...]
+  }
+}
 ```
 
-The CLI will:
+## Supported Banks
 
-1. Extract text from the PDF
-2. Detect the credit card issuer
-3. Route to the appropriate issuer parser
-4. Print structured JSON to stdout
-5. Log details to `parser.log`
+- **HDFC Bank** - India
+- **ICICI Bank** - India
+- **Axis Bank** - India
+- **Chase Bank** - USA
+- **IDFC First Bank** - India
 
-### 3. API Server
+## How It Works
 
-From inside `backend/`:
-
-```bash
-python app.py
-```
-
-By default this starts a development server at `http://127.0.0.1:5000`.
-
-- **Endpoint**: `POST /api/parse`
-- **Body**: `multipart/form-data` with a single field `file` containing the PDF
-- **Response**:
-  - On success: `{"success": true, "file": "<uploaded_name>", "data": { ...parsed JSON... }}`
-  - On error: `{"success": false, "error": "<reason>" }`
-
-Example `curl`:
-
-```bash
-curl -X POST http://127.0.0.1:5000/api/parse \
-  -F "file=@backend/samples/HDFC_statement.pdf"
-```
-
----
-
-## Frontend
-
-- Located at `frontend/index.html`
-- Simple single‑page UI that:
-  - Lets you pick a PDF file
-  - Sends it to the backend `POST /api/parse` endpoint
-  - Shows the parsed JSON result or error message
-
-### Running the Frontend
-
-For **deployment**, the frontend is designed to work best when served from the **same origin** as the backend:
-
-- Serve `index.html` and other static assets from the same host/port as the Flask app.
-- Proxy `/api/parse` to the Flask backend (for example, via Nginx or any reverse proxy).
-- The frontend uses a relative API URL (`/api/parse` by default) so everything lives under a single origin.
-
-For **local development** you can still point it directly at a running backend on `http://127.0.0.1:5000` by opening the browser console and setting:
-
-```js
-window.API_URL_OVERRIDE = "http://127.0.0.1:5000/api/parse";
-```
-
-Then reload the page.
-
----
-
-## How Parsing Works (Backend)
-
-- **PDF Text Extraction**: Uses `pdfplumber` to extract text from all pages (text‑based PDFs only, no OCR).
-- **Issuer Detection**: `parser/detect_issuer.py` looks for issuer‑specific keywords (e.g., `HDFC BANK`, `AXIS BANK`, `JPMORGAN CHASE`).
-- **Issuer Parsers**: Each file in `parser/` (`hdfc.py`, `axis.py`, etc.) contains regex‑based logic tailored to that bank’s statement layout.
-- **Graceful Failure**: Missing fields are logged and returned as `null`; unknown issuers raise `UnsupportedIssuerError`.
-
-Key operations and errors are written to `backend/parser.log` for debugging.
-
----
+1. **PDF Text Extraction**: Uses `pdfplumber` to extract all text from PDF pages
+2. **Bank Detection**: Searches extracted text for bank-specific keywords
+3. **Parser Selection**: Routes to the appropriate bank-specific parser
+4. **Field Extraction**: Uses regex patterns to find and extract:
+   - Card number (last 4 digits)
+   - Billing period dates
+   - Payment due date
+   - Total amount due
+   - Individual transactions
+5. **Data Return**: Returns structured JSON with all extracted information
 
 ## Limitations
 
-- Works only with **text‑based PDFs** (no OCR for scanned/image PDFs).
-- Parsers are **layout‑specific** – if a bank substantially changes its statement format, the corresponding parser may need updates.
-- Primarily tuned for **Indian Rupee (₹)** style amounts and the bundled sample statements.
+- **Text-based PDFs only**: Does not support scanned/image-based PDFs (no OCR)
+- **Format-specific**: Parsers are designed for specific statement layouts
+- **Bank format changes**: If a bank changes their statement format, the parser may need updates
+- **Date formats**: Dates are preserved as-is from the PDF (not normalized)
 
----
+## Production Deployment
 
-## Development Notes
+For production, use a WSGI server:
 
-- To add a new issuer, create a parser module in `backend/parser/`, wire it into `detect_issuer.py` and the parser mapping in `backend/main.py`, and add at least one sample PDF under `backend/samples/`.
-- Follow basic PEP 8 style and log both successes and failures when extracting fields to keep `parser.log` useful.
+```bash
+gunicorn --bind 0.0.0.0:5000 --workers 4 backend.wsgi:app
+```
 
----
+Or set environment variables:
+```bash
+export PORT=5000
+export FLASK_DEBUG=false
+python backend/app.py
+```
 
-## Deployment on Vercel
+## Notes
 
-This project is configured for easy deployment on Vercel:
-
-1. **Push your code to GitHub** (if not already done)
-
-2. **Import on Vercel**:
-   - Go to [vercel.com](https://vercel.com)
-   - Click "Import Project"
-   - Select your GitHub repository
-   - Vercel will auto-detect the configuration from `vercel.json`
-
-3. **Deploy**:
-   - Click "Deploy"
-   - Vercel will:
-     - Install Python dependencies from `requirements.txt`
-     - Deploy the API as a serverless function at `/api/parse`
-     - Serve the frontend from the `frontend/` directory
-     
-4. **Access your app**:
-   - Your app will be live at `https://your-project.vercel.app`
-   - The frontend will automatically use the same origin for API calls
-
-**Note**: The `vercel.json` configuration handles routing `/api/parse` to the Python backend and all other routes to the static frontend.
-
----
-
-## License & Usage
-
-This is an **educational/demo** project.  
-Always verify parsed results against the original statements before using them for any financial decisions.
+- Always verify parsed data against original statements
+- Works best with text-based PDFs (not scanned documents)
+- Sample PDFs are available in `backend/samples/` for testing
