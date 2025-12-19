@@ -2,21 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "frontend/**",
-      "use": "@vercel/static"
-    },
-    {
       "src": "api/parse.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": ["backend/**"]
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/api/parse",
       "dest": "api/parse.py"
+    },
+    {
+      "src": "/",
+      "dest": "frontend/index.html"
     },
     {
       "src": "/(.*)",
