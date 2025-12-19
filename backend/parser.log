@@ -76,3 +76,8 @@
 2025-12-19 17:23:51,697 - INFO - Extracted 32 transactions for ICICI
 2025-12-19 17:23:51,697 - INFO - Parsing completed successfully
 2025-12-19 17:23:51,701 - INFO - 192.168.0.110 - - [19/Dec/2025 17:23:51] "POST /api/parse HTTP/1.1" 200 -
+2025-12-19 17:37:33,883 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.110:5000
+2025-12-19 17:37:33,887 - INFO - [33mPress CTRL+C to quit[0m

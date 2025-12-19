@@ -8,15 +8,13 @@ import json
 import logging
 from pathlib import Path
 
-from parser.utils import extract_text_from_pdf
-from parser.detect_issuer import detect_issuer, UnsupportedIssuerError
-from parser import (
-    parse_hdfc,
-    parse_icici,
-    parse_axis,
-    parse_chase,
-    parse_idfc,
-)
+from backend.parser.utils import extract_text_from_pdf
+from backend.parser.detect_issuer import detect_issuer, UnsupportedIssuerError
+from backend.parser.hdfc import parse_hdfc
+from backend.parser.icici import parse_icici
+from backend.parser.axis import parse_axis
+from backend.parser.chase import parse_chase
+from backend.parser.idfc import parse_idfc
 
 
 # Configure logging
