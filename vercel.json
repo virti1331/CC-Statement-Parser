@@ -6,14 +6,17 @@
       "use": "@vercel/static"
     },
     {
-      "src": "api/*.py",
-      "use": "@vercel/python"
+      "src": "api/parse.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": ["backend/**"]
+      }
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "api/$1.py"
+      "src": "/api/parse",
+      "dest": "api/parse.py"
     },
     {
       "src": "/(.*)",
