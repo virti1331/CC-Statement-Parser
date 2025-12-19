@@ -9,7 +9,7 @@ from pathlib import Path
 from flask import Flask, request, jsonify, send_from_directory
 
 from backend.main import parse_statement
-from parser.detect_issuer import UnsupportedIssuerError
+from backend.parser.detect_issuer import UnsupportedIssuerError
 
 app = Flask(__name__, static_folder=None)
 
