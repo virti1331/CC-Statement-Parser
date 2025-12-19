@@ -39,3 +39,40 @@
 2025-12-19 00:31:40,825 - INFO - Extracted 3 transactions for IDFC
 2025-12-19 00:31:40,825 - INFO - Parsing completed successfully
 2025-12-19 00:31:40,831 - INFO - 192.168.0.111 - - [19/Dec/2025 00:31:40] "POST /api/parse HTTP/1.1" 200 -
+2025-12-19 17:12:36,571 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.110:5000
+2025-12-19 17:12:36,638 - INFO - [33mPress CTRL+C to quit[0m
+2025-12-19 17:12:45,976 - INFO - 192.168.0.110 - - [19/Dec/2025 17:12:45] "GET / HTTP/1.1" 200 -
+2025-12-19 17:12:47,623 - INFO - 192.168.0.110 - - [19/Dec/2025 17:12:47] "GET /favicon.ico HTTP/1.1" 200 -
+2025-12-19 17:12:56,259 - INFO - Processing PDF: C:\Users\VIRTID~1\AppData\Local\Temp\tmpr2m3u1h5.pdf
+2025-12-19 17:12:58,953 - INFO - Extracted 6417 characters from PDF
+2025-12-19 17:12:58,954 - INFO - Detected issuer: ICICI Bank
+2025-12-19 17:12:58,954 - INFO - Parsing statement using ICICI parser
+2025-12-19 17:12:58,955 - INFO - Extracted card_last_4_digits: 0000
+2025-12-19 17:12:58,957 - WARNING - Could not extract billing_period for ICICI
+2025-12-19 17:12:58,958 - WARNING - Could not extract payment_due_date for ICICI
+2025-12-19 17:12:58,959 - WARNING - Could not extract total_amount_due for ICICI
+2025-12-19 17:12:58,961 - INFO - Extracted 32 transactions for ICICI
+2025-12-19 17:12:58,964 - INFO - Parsing completed successfully
+2025-12-19 17:12:58,968 - INFO - 192.168.0.110 - - [19/Dec/2025 17:12:58] "POST /api/parse HTTP/1.1" 200 -
+2025-12-19 17:13:14,457 - INFO - 127.0.0.1 - - [19/Dec/2025 17:13:14] "GET /?id=5765a442-d89f-4db0-9227-53f93bb8b8a2&vscodeBrowserReqId=1766144594288 HTTP/1.1" 200 -
+2025-12-19 17:23:30,482 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.110:5000
+2025-12-19 17:23:30,504 - INFO - [33mPress CTRL+C to quit[0m
+2025-12-19 17:23:34,886 - INFO - 192.168.0.110 - - [19/Dec/2025 17:23:34] "[36mGET / HTTP/1.1[0m" 304 -
+2025-12-19 17:23:35,958 - INFO - 192.168.0.110 - - [19/Dec/2025 17:23:35] "[36mGET /favicon.ico HTTP/1.1[0m" 304 -
+2025-12-19 17:23:49,394 - INFO - Processing PDF: C:\Users\VIRTID~1\AppData\Local\Temp\tmpqjg3lc5c.pdf
+2025-12-19 17:23:51,692 - INFO - Extracted 6417 characters from PDF
+2025-12-19 17:23:51,693 - INFO - Detected issuer: ICICI Bank
+2025-12-19 17:23:51,693 - INFO - Parsing statement using ICICI parser
+2025-12-19 17:23:51,694 - INFO - Extracted card_last_4_digits: 0000
+2025-12-19 17:23:51,694 - WARNING - Could not extract billing_period for ICICI
+2025-12-19 17:23:51,695 - WARNING - Could not extract payment_due_date for ICICI
+2025-12-19 17:23:51,696 - WARNING - Could not extract total_amount_due for ICICI
+2025-12-19 17:23:51,697 - INFO - Extracted 32 transactions for ICICI
+2025-12-19 17:23:51,697 - INFO - Parsing completed successfully
+2025-12-19 17:23:51,701 - INFO - 192.168.0.110 - - [19/Dec/2025 17:23:51] "POST /api/parse HTTP/1.1" 200 -
