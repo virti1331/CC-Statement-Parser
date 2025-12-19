@@ -2,6 +2,10 @@
   "version": 2,
   "builds": [
     {
+      "src": "frontend/index.html",
+      "use": "@vercel/static"
+    },
+    {
       "src": "api/parse.py",
       "use": "@vercel/python"
     }
