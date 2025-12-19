@@ -1,10 +1,23 @@
 {
-  "buildCommand": "pip install -r requirements.txt",
-  "outputDirectory": "frontend",
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/api/parse",
-      "destination": "/api/index"
+      "src": "frontend/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "api/*.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/$1.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/$1"
     }
   ]
 }
